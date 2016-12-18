@@ -27,5 +27,5 @@ $dbname => 'yii2basic'
 каталога WEB сервера.
 Тогда главная страница приложения будет иметь ссылку: 
 ~~~
-http://localhost/tst/index.php
+http://localhost/tst_ex/index.php
 ~~~
