@@ -94,11 +94,11 @@ class cform
      * $fields[]  = [['Имя', 'name',],...];
      * $buttons[] = ['Отмена', 'button', 'btn btn-default', './'];
      */
-    public function bldTable($tytle, $tytleform, $width, $fields, $rows, $buttons) {
+    public function bldTable($tytle, $tytleform, $width, $fields, $rows, $buttons, $count_entrys, $entry_on_page, $current_page, $max_pages_list) {
         $widthlr = (12 - $width) / 2;
         echo '<div class="container">' . "\n";
         echo ' <div class="row row-offcanvas row-offcanvas-center">' . "\n";
-        echo ' <div class="col-xs-12 col-sm-12 col-md-12"><h13align="center">' . $tytle . '</h3></div>' . "\n";
+        echo ' <div class="col-xs-12 col-sm-12 col-md-12"><h3 align="center">' . $tytle . '</h3></div>' . "\n";
         echo ' <div class="col-xs-' . $widthlr . ' col-sm-' . $widthlr . ' col-md-' . $widthlr . '"></div>' . "\n";
         echo '  <div class="col-xs-' . $width . ' col-sm-' . $width . ' col-md-' . $width . '">' . "\n";
         echo '   <div class="panel panel-info">' . "\n";
@@ -106,6 +106,9 @@ class cform
         echo $tytleform . "\n";
         echo '    </div>' . "\n";
         echo '    <div class="panel-body">' . "\n";
+
+        $this->bldPaginator($count_entrys, $entry_on_page, $current_page, $max_pages_list);
+
         echo '<table class="table table-striped table-bordered">' . "\n";
         echo '<thead>' . "\n";
         echo '<tr>' . "\n";
@@ -129,5 +132,54 @@ class cform
         echo '  </div>' . "\n";
         echo ' </div>' . "\n";
         echo '</div>' . "\n";
+    }
+    /*
+     * $fields[]  = [['Имя', 'name',],...];
+     * $buttons[] = ['Отмена', 'button', 'btn btn-default', './'];
+     */
+
+    public function bldPaginator($count_entrys, $entry_on_page, $current_page, $max_pages_list) {
+        echo '<nav aria-label = "Page navigation">' . "\n";
+        echo '<ul class = "pagination">' . "\n";
+        echo '<li>' . "\n";
+        echo '<a href = "' . './?current_page=' . '1' . '" aria-label = "Previous">' . "\n";
+        echo '<span aria-hidden = "true">&laquo;' . "\n";
+        echo '</span>' . "\n";
+        echo '</a>' . "\n";
+        echo '</li >' . "\n";
+            
+        $count_pages = ceil($count_entrys / $entry_on_page);
+        $first_page = $current_page - (int) ($max_pages_list / 2);
+        if ($first_page <= 1)
+            $first_page = 1;
+        else {
+            if ($count_pages - $first_page < $max_pages_list) {
+                $first_page = $count_pages - $max_pages_list + 1;
+                if ($first_page <= 1)
+                    $first_page = 1;
+            }
+        }
+        $last_page = $first_page + $max_pages_list - 1;
+        if ($last_page > $count_pages)
+            $last_page = $count_pages;
+/*
+        if ($first_page != 1)
+            echo '< |';
+*/
+        for ($i = $first_page; $i <= $last_page; $i++) {
+            echo '<li ' . (($i == $current_page) ? 'class="active"' : '') . '><a href="' . './?current_page=' . $i . '">' . $i . '</a></li>' . "\n";
+        }
+/*
+        if ($last_page < $count_pages)
+            echo ' >';
+ */
+        echo '<li>' . "\n";
+        echo '<a href = "' . './?current_page=' . $count_pages . '" aria-label = "Next">' . "\n";
+        echo '<span aria-hidden = "true">&raquo;' . "\n";
+        echo '</span>' . "\n";
+        echo '</a>' . "\n";
+        echo '</li>' . "\n";
+        echo '</ul>' . "\n";
+        echo '</nav>' . "\n";
     }
 }

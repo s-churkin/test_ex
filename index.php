@@ -15,6 +15,14 @@ if (!empty((string)filter_input(INPUT_POST, 'action'))) {
 $user = (string)filter_input(INPUT_COOKIE, 'user');
 $captcha = (string)filter_input(INPUT_COOKIE, 'captcha');
 
+$count_entrys   = 0  ; // количество записей
+$entry_on_page  = 5;  // количество записей на странице
+$current_page   = (string)filter_input(INPUT_GET, 'current_page');;  // текущая страница
+if (empty($current_page)) {
+    $current_page = 1;
+}
+$max_pages_list = 5; // сколько номеров страниц показывать
+
 if ($page == 'logout') {
     setcookie("user", ''); 
     $user = '';
@@ -134,7 +142,8 @@ if (empty($action) && !$error) {
     $buttons[] = ['Создать запись', 'button', 'btn btn-success', './?page=home&action=create'];
     $buttons[] = ['Отмена', 'button', 'btn btn-default', './'];
     include ("dbconnect.php");
-    $rows = mysqli_query($connection, 'SELECT * FROM `tst_gbook`');
+    $count_entrys = mysqli_fetch_array(mysqli_query($connection, 'SELECT COUNT(*) as count FROM `tst_gbook`'))[0];
+    $rows = mysqli_query($connection, 'SELECT * FROM `tst_gbook` LIMIT ' . (int) $entry_on_page . ' OFFSET ' . (int) $current_page);
     while ($row = mysqli_fetch_array($rows)) {
         $r[] = [$row['id'],
             $row['name'],
@@ -145,6 +154,6 @@ if (empty($action) && !$error) {
         ];
     }
     $connection->close();
-    $cform->bldTable('Гостевая книга', 'Список сообщений', 12, $fields, $r, $buttons);
+    $cform->bldTable('Гостевая книга', 'Список сообщений', 12, $fields, $r, $buttons, $count_entrys, $entry_on_page, $current_page, $max_pages_list);
 }
 $cform->bldFutter();
